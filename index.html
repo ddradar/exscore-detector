@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EX Score Detector</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <section class="panel form-panel">
+        <h1>EX Score Detector</h1>
+        <p class="lead">通常スコアから判定内訳とEXスコアを推定します。</p>
+
+        <form id="detector-form" class="detector-form">
+          <label for="song-select">曲名</label>
+          <select id="song-select" required></select>
+          <p id="song-meta" class="song-meta"></p>
+
+          <label for="normal-score-input">通常スコア</label>
+          <input
+            id="normal-score-input"
+            type="number"
+            min="0"
+            max="1000000"
+            step="1"
+            placeholder="例: 987650"
+            required
+          />
+
+          <button type="submit">計算する</button>
+        </form>
+
+        <p class="note">フルコンボ種別は常に未指定として推定します。</p>
+      </section>
+
+      <section class="panel result-panel">
+        <h2>推定結果</h2>
+        <p id="chart-meta" class="meta"></p>
+        <p id="status" class="status" aria-live="polite"></p>
+        <div id="result-container"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
