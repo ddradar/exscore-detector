@@ -1,0 +1,33 @@
+{
+  "name": "exscore-detector",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Detect EX score from normal score",
+  "license": "MIT",
+  "author": "Nogic <24802730+nogic1008@users.noreply.github.com>",
+  "repository": "https://github.com/ddradar/ddradar.git",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "wrangler": "^4.133.0"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.x",
+      "onFail": "warn"
+    },
+    "packageManager": {
+      "name": "npm",
+      "version": "^11.19.0",
+      "onFail": "warn"
+    }
+  },
+  "packageManager": "npm@11.19.0",
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "workerd@1.20260916.1": true
+  }
+}
