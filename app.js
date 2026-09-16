@@ -66,12 +66,12 @@ function inferJudgementCounts(normalNotes, okCount, normalScore, fullComboType) 
   }
 
   const candidates = []
-  const maxMiss = notes + ok
+  const total = notes + ok
+  const maxMiss = notes
 
   for (let miss = 0; miss <= maxMiss; miss++) {
     if (type && miss !== 0) continue
 
-    const total = notes + ok + miss
     const bestPossibleScoreAtThisMiss = calcNormalScore(
       total,
       total - miss,
@@ -235,15 +235,52 @@ function normalizeSongs(rawList) {
   })
 }
 
-function uniqueByExScore(candidates) {
-  const seen = new Set()
-  return candidates.filter((candidate) => {
-    if (seen.has(candidate.exScore)) {
-      return false
+function formatRange(min, max) {
+  return min === max ? String(min) : `${min}-${max}`
+}
+
+function aggregateCandidatesByExScore(candidates) {
+  const grouped = new Map()
+
+  candidates.forEach((candidate) => {
+    const key = candidate.exScore
+    if (!grouped.has(key)) {
+      grouped.set(key, {
+        exScore: candidate.exScore,
+        marvelousMin: candidate.marvelous,
+        marvelousMax: candidate.marvelous,
+        perfectMin: candidate.perfect,
+        perfectMax: candidate.perfect,
+        greatMin: candidate.great,
+        greatMax: candidate.great,
+        goodMin: candidate.good,
+        goodMax: candidate.good,
+        okMin: candidate.ok,
+        okMax: candidate.ok,
+        missMin: candidate.miss,
+        missMax: candidate.miss,
+        patterns: 1,
+      })
+      return
     }
-    seen.add(candidate.exScore)
-    return true
+
+    const item = grouped.get(key)
+    item.marvelousMin = Math.min(item.marvelousMin, candidate.marvelous)
+    item.marvelousMax = Math.max(item.marvelousMax, candidate.marvelous)
+    item.perfectMin = Math.min(item.perfectMin, candidate.perfect)
+    item.perfectMax = Math.max(item.perfectMax, candidate.perfect)
+    item.greatMin = Math.min(item.greatMin, candidate.great)
+    item.greatMax = Math.max(item.greatMax, candidate.great)
+    item.goodMin = Math.min(item.goodMin, candidate.good)
+    item.goodMax = Math.max(item.goodMax, candidate.good)
+    item.okMin = Math.min(item.okMin, candidate.ok)
+    item.okMax = Math.max(item.okMax, candidate.ok)
+    item.missMin = Math.min(item.missMin, candidate.miss)
+    item.missMax = Math.max(item.missMax, candidate.miss)
+    item.patterns += 1
   })
+
+  return [...grouped.values()].sort((a, b) => b.exScore - a.exScore)
 }
 
 function renderResultTable(candidates) {
@@ -273,12 +310,12 @@ function renderResultTable(candidates) {
 
     const cells = [
       index + 1,
-      item.marvelous,
-      item.perfect,
-      item.great,
-      item.good,
-      item.ok,
-      item.miss,
+      formatRange(item.marvelousMin, item.marvelousMax),
+      formatRange(item.perfectMin, item.perfectMax),
+      formatRange(item.greatMin, item.greatMax),
+      formatRange(item.goodMin, item.goodMax),
+      formatRange(item.okMin, item.okMax),
+      formatRange(item.missMin, item.missMax),
       item.exScore,
     ]
 
@@ -320,11 +357,14 @@ form.addEventListener('submit', (event) => {
     const notes = Number(song.notes)
     const okCount = Number(song.freezes) + Number(song.shocks)
     const candidates = inferJudgementCounts(notes, okCount, normalScore, null)
-    const uniqueCandidates = uniqueByExScore(candidates).sort((a, b) => b.exScore - a.exScore)
+    const exAggregates = aggregateCandidatesByExScore(candidates)
 
-    chartMeta.textContent = `${song.title} / notes: ${notes} / ok: ${okCount} (freezes: ${song.freezes}, shocks: ${song.shocks})`
-    setStatus(`${uniqueCandidates.length} 件の候補を表示しています。`, 'success')
-    resultContainer.appendChild(renderResultTable(uniqueCandidates))
+    chartMeta.textContent = `${song.title} / Normal Score: ${normalScore}`
+    setStatus(
+      `${exAggregates.length} 件のEX候補を表示（${candidates.length} パターンを集約）`,
+      'success'
+    )
+    resultContainer.appendChild(renderResultTable(exAggregates))
   } catch (error) {
     setStatus(error instanceof Error ? error.message : String(error), 'error')
   }
