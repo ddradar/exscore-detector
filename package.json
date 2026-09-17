@@ -8,6 +8,8 @@
   "repository": "https://github.com/ddradar/ddradar.git",
   "type": "module",
   "scripts": {
+    "build": "rm -rf .worker-assets && mkdir -p .worker-assets && cp app.js index.html styles.css songs.json .worker-assets/",
+    "deploy": "npm run build && wrangler deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
