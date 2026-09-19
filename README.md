@@ -14,7 +14,7 @@
 
 - `index.html`: 画面本体
 - `styles.css`: スタイル
-- `src/core/exscore.js`: EX スコア推定のコアロジック
+- `src/core/score.js`: EX スコア推定のコアロジック
 - `src/core/song-data.js`: 楽曲データ検証ロジック
 - `src/ui/app-ui.js`: UI ロジック
 - `src/main.js`: エントリーポイント

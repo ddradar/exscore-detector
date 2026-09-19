@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import {
-  getTheoreticalMaxEx,
-  normalizeSongs,
-  toNonNegativeInteger,
-} from '../../src/core/song-data.js'
+import { normalizeSongs } from '../../src/core/song-data.js'
 
 describe('song data utilities', () => {
   it('normalizes songs into validated objects', () => {
@@ -17,18 +13,31 @@ describe('song data utilities', () => {
     ])
   })
 
-  it('throws when title is empty', () => {
-    expect(() =>
-      normalizeSongs([{ title: '   ', notes: 10, freezes: 0, shocks: 0 }])
-    ).toThrow(/title/)
-  })
-
-  it('converts valid integer and rejects invalid values', () => {
-    expect(toNonNegativeInteger('42', 'value')).toBe(42)
-    expect(() => toNonNegativeInteger(-1, 'value')).toThrow(/non-negative/)
-  })
-
-  it('calculates theoretical max EX', () => {
-    expect(getTheoreticalMaxEx({ notes: 100, freezes: 10, shocks: 5 })).toBe(345)
+  it.each([
+    [{}, /songs\.json に有効な楽曲データがありません。/],
+    [[], /songs\.json に有効な楽曲データがありません。/],
+    [[1], /songs\.json\[0\] must be an object/],
+    [
+      [{ notes: 10, freezes: 0, shocks: 0 }],
+      /\.title must be a non-empty string/,
+    ],
+    [
+      [{ title: '   ', notes: 10, freezes: 0, shocks: 0 }],
+      /\.title must be a non-empty string/,
+    ],
+    [
+      [{ title: 'Song A (EXP)', notes: -1, freezes: 0, shocks: 0 }],
+      /\.notes must be a non-negative integer: -1/,
+    ],
+    [
+      [{ title: 'Song A (EXP)', notes: 100, freezes: -1, shocks: 0 }],
+      /\.freezes must be a non-negative integer: -1/,
+    ],
+    [
+      [{ title: 'Song A (EXP)', notes: 100, freezes: 0, shocks: -1 }],
+      /\.shocks must be a non-negative integer: -1/,
+    ],
+  ])('normalizeSongs(%j) throws "%s"', (songs, errorPattern) => {
+    expect(() => normalizeSongs(songs)).toThrow(errorPattern)
   })
 })

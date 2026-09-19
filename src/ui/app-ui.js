@@ -1,9 +1,9 @@
 import {
   aggregateCandidatesByExScore,
-  formatRange,
+  calcExScore,
   inferJudgementCounts,
-} from '../core/exscore.js'
-import { getTheoreticalMaxEx, normalizeSongs } from '../core/song-data.js'
+} from '../core/score.js'
+import { normalizeSongs } from '../core/song-data.js'
 
 const songSelect = document.querySelector('#song-select')
 const scoreInput = document.querySelector('#normal-score-input')
@@ -15,6 +15,10 @@ const chartMeta = document.querySelector('#chart-meta')
 const appVersion = document.querySelector('#app-version')
 
 let songEntries = []
+
+function formatRange(min, max) {
+  return min === max ? String(min) : `${min}-${max}`
+}
 
 function setStatus(message, kind = 'default') {
   status.textContent = message
@@ -40,7 +44,7 @@ function renderSelectedSongMeta() {
     return
   }
 
-  const maxEx = getTheoreticalMaxEx(song)
+  const maxEx = calcExScore(song.notes + song.freezes + song.shocks, 0, 0)
   songMeta.textContent = `Notes: ${song.notes}/${song.freezes}/${song.shocks}, MAX: ${maxEx}`
 }
 
@@ -58,13 +62,22 @@ function renderResultTable(candidates) {
   const table = document.createElement('table')
   table.className = 'result-table'
 
-  const maxExScore = Math.max(...candidates.map((candidate) => candidate.exScore))
+  const maxExScore = Math.max(...candidates.map(candidate => candidate.exScore))
 
-  const headers = ['#', 'MARVELOUS', 'PERFECT', 'GREAT', 'GOOD', 'OK', 'MISS', 'EX']
+  const headers = [
+    '#',
+    'MARVELOUS',
+    'PERFECT',
+    'GREAT',
+    'GOOD',
+    'OK',
+    'MISS',
+    'EX',
+  ]
 
   const thead = document.createElement('thead')
   const headerRow = document.createElement('tr')
-  headers.forEach((header) => {
+  headers.forEach(header => {
     const th = document.createElement('th')
     th.textContent = header
     headerRow.appendChild(th)
@@ -81,16 +94,16 @@ function renderResultTable(candidates) {
 
     const cells = [
       index + 1,
-      formatRange(item.marvelousMin, item.marvelousMax),
-      formatRange(item.perfectMin, item.perfectMax),
-      formatRange(item.greatMin, item.greatMax),
-      formatRange(item.goodMin, item.goodMax),
-      formatRange(item.okMin, item.okMax),
-      formatRange(item.missMin, item.missMax),
+      formatRange(item.marvelous.min, item.marvelous.max),
+      formatRange(item.perfect.min, item.perfect.max),
+      formatRange(item.great.min, item.great.max),
+      formatRange(item.good.min, item.good.max),
+      formatRange(item.ok.min, item.ok.max),
+      formatRange(item.miss.min, item.miss.max),
       item.exScore,
     ]
 
-    cells.forEach((cell) => {
+    cells.forEach(cell => {
       const td = document.createElement('td')
       td.textContent = String(cell)
       row.appendChild(td)
@@ -109,7 +122,7 @@ function clearResult() {
 }
 
 function bindEvents() {
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', event => {
     event.preventDefault()
     clearResult()
 
@@ -120,21 +133,28 @@ function bindEvents() {
     }
 
     const normalScore = Number(scoreInput.value)
-    if (!Number.isInteger(normalScore) || normalScore < 0 || normalScore > 1000000) {
-      setStatus('通常スコアは 0 から 1000000 の整数で入力してください。', 'error')
+    if (
+      !Number.isInteger(normalScore) ||
+      normalScore < 0 ||
+      normalScore > 1000000
+    ) {
+      setStatus(
+        '通常スコアは 0 から 1000000 の整数で入力してください。',
+        'error',
+      )
       return
     }
 
     try {
       const notes = Number(song.notes)
       const okCount = Number(song.freezes) + Number(song.shocks)
-      const candidates = inferJudgementCounts(notes, okCount, normalScore, null)
+      const candidates = inferJudgementCounts(notes, okCount, normalScore)
       const exAggregates = aggregateCandidatesByExScore(candidates)
 
       chartMeta.textContent = `${song.title} / Normal Score: ${normalScore}`
       setStatus(
         `${exAggregates.length} 件のEX候補を表示（${candidates.length} パターンを集約）`,
-        'success'
+        'success',
       )
       resultContainer.appendChild(renderResultTable(exAggregates))
     } catch (error) {
@@ -153,7 +173,9 @@ async function loadSongs() {
   try {
     const response = await fetch('/songs.json', { cache: 'no-store' })
     if (!response.ok) {
-      throw new Error(`songs.json の読み込みに失敗しました (${response.status})`)
+      throw new Error(
+        `songs.json の読み込みに失敗しました (${response.status})`,
+      )
     }
 
     const data = await response.json()
