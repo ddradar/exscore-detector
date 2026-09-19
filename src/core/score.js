@@ -49,11 +49,40 @@ export function calcExScore(marvelousAndOk, perfect, great) {
 }
 
 /**
+ * @typedef {Object} InferCandidate
+ * @property {number} marvelous Marvelous count (without OK)
+ * @property {number} perfect Perfect count
+ * @property {number} great Great count
+ * @property {number} good Good count
+ * @property {number} ok OK count
+ * @property {number} miss Miss count
+ * @property {number} exScore Inferred EX score
+ */
+
+/**
+ * @typedef {Object} JudgementRange
+ * @property {number} min Minimum value in grouped candidates
+ * @property {number} max Maximum value in grouped candidates
+ */
+
+/**
+ * @typedef {Object} ExScoreAggregate
+ * @property {number} exScore EX score key for this aggregate row
+ * @property {JudgementRange} marvelous Marvelous count range
+ * @property {JudgementRange} perfect Perfect count range
+ * @property {JudgementRange} great Great count range
+ * @property {JudgementRange} good Good count range
+ * @property {JudgementRange} ok OK count range
+ * @property {JudgementRange} miss Miss count range
+ * @property {number} patterns Number of grouped candidate patterns
+ */
+
+/**
  *
  * @param {number} normalNotes Notes count (exclude Freeze arrows & Shock arrows)
  * @param {number} okCount OK count (Freeze arrows & Shock arrows)
  * @param {number} normalScore Normal score (0-1000000)
- * @returns {Array<Object>} Array of inferred judgement counts with exScore
+ * @returns {InferCandidate[]} Array of inferred judgement counts with exScore
  */
 export function inferJudgementCounts(normalNotes, okCount, normalScore) {
   const notes = Number(normalNotes)
@@ -158,6 +187,10 @@ export function formatRange(min, max) {
   return min === max ? String(min) : `${min}-${max}`
 }
 
+/**
+ * @param {InferCandidate[]} candidates Candidate list to aggregate by EX score
+ * @returns {ExScoreAggregate[]} Aggregated candidates grouped by EX score
+ */
 export function aggregateCandidatesByExScore(candidates) {
   const grouped = new Map()
 
@@ -166,36 +199,30 @@ export function aggregateCandidatesByExScore(candidates) {
     if (!grouped.has(key)) {
       grouped.set(key, {
         exScore: candidate.exScore,
-        marvelousMin: candidate.marvelous,
-        marvelousMax: candidate.marvelous,
-        perfectMin: candidate.perfect,
-        perfectMax: candidate.perfect,
-        greatMin: candidate.great,
-        greatMax: candidate.great,
-        goodMin: candidate.good,
-        goodMax: candidate.good,
-        okMin: candidate.ok,
-        okMax: candidate.ok,
-        missMin: candidate.miss,
-        missMax: candidate.miss,
+        marvelous: { min: candidate.marvelous, max: candidate.marvelous },
+        perfect: { min: candidate.perfect, max: candidate.perfect },
+        great: { min: candidate.great, max: candidate.great },
+        good: { min: candidate.good, max: candidate.good },
+        ok: { min: candidate.ok, max: candidate.ok },
+        miss: { min: candidate.miss, max: candidate.miss },
         patterns: 1,
       })
       return
     }
 
     const item = grouped.get(key)
-    item.marvelousMin = Math.min(item.marvelousMin, candidate.marvelous)
-    item.marvelousMax = Math.max(item.marvelousMax, candidate.marvelous)
-    item.perfectMin = Math.min(item.perfectMin, candidate.perfect)
-    item.perfectMax = Math.max(item.perfectMax, candidate.perfect)
-    item.greatMin = Math.min(item.greatMin, candidate.great)
-    item.greatMax = Math.max(item.greatMax, candidate.great)
-    item.goodMin = Math.min(item.goodMin, candidate.good)
-    item.goodMax = Math.max(item.goodMax, candidate.good)
-    item.okMin = Math.min(item.okMin, candidate.ok)
-    item.okMax = Math.max(item.okMax, candidate.ok)
-    item.missMin = Math.min(item.missMin, candidate.miss)
-    item.missMax = Math.max(item.missMax, candidate.miss)
+    item.marvelous.min = Math.min(item.marvelous.min, candidate.marvelous)
+    item.marvelous.max = Math.max(item.marvelous.max, candidate.marvelous)
+    item.perfect.min = Math.min(item.perfect.min, candidate.perfect)
+    item.perfect.max = Math.max(item.perfect.max, candidate.perfect)
+    item.great.min = Math.min(item.great.min, candidate.great)
+    item.great.max = Math.max(item.great.max, candidate.great)
+    item.good.min = Math.min(item.good.min, candidate.good)
+    item.good.max = Math.max(item.good.max, candidate.good)
+    item.ok.min = Math.min(item.ok.min, candidate.ok)
+    item.ok.max = Math.max(item.ok.max, candidate.ok)
+    item.miss.min = Math.min(item.miss.min, candidate.miss)
+    item.miss.max = Math.max(item.miss.max, candidate.miss)
     item.patterns += 1
   })
 
