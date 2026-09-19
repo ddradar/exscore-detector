@@ -5,14 +5,17 @@
   "description": "Detect EX score from normal score",
   "license": "MIT",
   "author": "Nogic <24802730+nogic1008@users.noreply.github.com>",
-  "repository": "https://github.com/ddradar/ddradar.git",
+  "repository": "https://github.com/ddradar/exscore-detector.git",
   "type": "module",
   "scripts": {
-    "build": "rm -rf dist && mkdir -p dist && cp app.js index.html styles.css songs.json dist/",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "deploy": "npm run build && wrangler deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "vite": "^8.3.0",
     "wrangler": "^4.133.0"
   },
   "devEngines": {

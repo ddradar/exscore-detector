@@ -2,13 +2,6 @@
 
 通常スコアから判定内訳と EX スコア候補を推定する静的サイトです。
 
-## ファイル構成
-
-- `index.html`: 画面本体
-- `styles.css`: スタイル
-- `app.js`: UI ロジックと推定呼び出し
-- `songs.json`: `title`（曲名+難易度）、ノート数、フリーズ/ショック数データ
-
 ## 使い方
 
 1. `title`（曲名+難易度）を選択
@@ -16,6 +9,16 @@
 3. `計算する` を押下
 
 フルコンボ種別は常に未指定で推定します。
+
+## ファイル構成
+
+- `index.html`: 画面本体
+- `styles.css`: スタイル
+- `src/core/exscore.js`: EX スコア推定のコアロジック
+- `src/core/song-data.js`: 楽曲データ検証ロジック
+- `src/ui/app-ui.js`: UI ロジック
+- `src/main.js`: エントリーポイント
+- `public/songs.json`: `title`（曲名+難易度）、ノート数、フリーズ/ショック数データ
 
 ## songs.json 形式
 
@@ -32,4 +35,17 @@
     "shocks": 0
   }
 ]
+```
+
+## 開発
+
+```bash
+npm install
+npm run dev
+```
+
+## ビルド
+
+```bash
+npm run build
 ```
