@@ -2,7 +2,7 @@ import {
   aggregateCandidatesByExScore,
   formatRange,
   inferJudgementCounts,
-} from '../core/exscore.js'
+} from '../core/score.js'
 import { getTheoreticalMaxEx, normalizeSongs } from '../core/song-data.js'
 
 const songSelect = document.querySelector('#song-select')
@@ -128,7 +128,7 @@ function bindEvents() {
     try {
       const notes = Number(song.notes)
       const okCount = Number(song.freezes) + Number(song.shocks)
-      const candidates = inferJudgementCounts(notes, okCount, normalScore, null)
+      const candidates = inferJudgementCounts(notes, okCount, normalScore)
       const exAggregates = aggregateCandidatesByExScore(candidates)
 
       chartMeta.textContent = `${song.title} / Normal Score: ${normalScore}`

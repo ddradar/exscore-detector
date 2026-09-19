@@ -1,36 +1,68 @@
-export function calcNormalScore(totalNotes, marvelousAndOk, perfect, great, good) {
+/**
+ * Calculates the normal score based on the given judgement counts.
+ * @param {number} totalNotes Total notes + freeze arrows + shock arrows
+ * @param {number} marvelousAndOk Marvelous + OK count
+ * @param {number} perfect Perfect count
+ * @param {number} great Great count
+ * @param {number} good Good count
+ * @returns {number} The calculated normal score
+ */
+export function calcNormalScore(
+  totalNotes,
+  marvelousAndOk,
+  perfect,
+  great,
+  good,
+) {
+  // [Base score]: 1000000 / (notes + freezes + shocks)
+  // - Marvelous & OK = [Base score]
+  // - Perfect = [Base score] - 10
+  // - Great = ([Base score] * 0.6) - 10
+  // - Good = ([Base score] * 0.2) - 10
+  // - Miss = 0
+  // Total score is rounded down to the nearest 10.
   return (
     Math.floor(
       (100000 * (marvelousAndOk + perfect) + 60000 * great + 20000 * good) /
         totalNotes -
         perfect -
         great -
-        good
+        good,
     ) * 10
   )
 }
 
-export function inferExScore(totalNotes, judgement) {
-  const total = Number(totalNotes)
-  const { perfect = 0, great = 0, good = 0 } = judgement
-  return total * 3 - perfect - great * 2 - good * 3
+/**
+ * Calculates the EX score based on the given judgement counts.
+ * @param {number} marvelousAndOk Marvelous + OK count
+ * @param {number} perfect Perfect count
+ * @param {number} great Great count
+ * @returns {number} The calculated EX score
+ */
+export function calcExScore(marvelousAndOk, perfect, great) {
+  // - Marvelous & OK = 3
+  // - Perfect = 2
+  // - Great = 1
+  // - Good & Miss = 0
+  // Max score varies depending on the chart.
+  return marvelousAndOk * 3 + perfect * 2 + great
 }
 
-export function inferJudgementCounts(
-  normalNotes,
-  okCount,
-  normalScore,
-  fullComboType
-) {
+/**
+ *
+ * @param {number} normalNotes Notes count (exclude Freeze arrows & Shock arrows)
+ * @param {number} okCount OK count (Freeze arrows & Shock arrows)
+ * @param {number} normalScore Normal score (0-1000000)
+ * @returns {Array<Object>} Array of inferred judgement counts with exScore
+ */
+export function inferJudgementCounts(normalNotes, okCount, normalScore) {
   const notes = Number(normalNotes)
   const ok = Number(okCount)
   const score = Number(normalScore)
-  const rawType = fullComboType == null ? '' : String(fullComboType).trim()
-  const type = rawType ? rawType.toUpperCase() : null
 
   if (!Number.isInteger(notes) || notes < 0) {
     throw new TypeError(
-      `normalNotes must be a non-negative integer: ${normalNotes}`
+      `normalNotes must be a non-negative integer: ${normalNotes}`,
     )
   }
 
@@ -40,49 +72,22 @@ export function inferJudgementCounts(
 
   if (!Number.isInteger(score) || score < 0 || score > 1000000) {
     throw new TypeError(
-      `normalScore must be an integer between 0 and 1000000: ${normalScore}`
+      `normalScore must be an integer between 0 and 1000000: ${normalScore}`,
     )
-  }
-
-  if (type && !['MFC', 'PFC', 'GFC', 'FC'].includes(type)) {
-    throw new TypeError(
-      `fullComboType must be one of MFC, PFC, GFC, FC: ${fullComboType}`
-    )
-  }
-
-  if (type === 'MFC') {
-    if (score !== 1000000) {
-      throw new Error(
-        `MFC must resolve to 1000000 normal score, got ${score} for ${notes + ok} notes`
-      )
-    }
-
-    return [
-      {
-        marvelous: notes + ok,
-        perfect: 0,
-        great: 0,
-        good: 0,
-        ok,
-        miss: 0,
-        exScore: (notes + ok) * 3,
-      },
-    ]
   }
 
   const candidates = []
   const total = notes + ok
   const maxMiss = notes
+  const theoreticalMaxExScore = calcExScore(total, 0, 0)
 
   for (let miss = 0; miss <= maxMiss; miss++) {
-    if (type && miss !== 0) continue
-
     const bestPossibleScoreAtThisMiss = calcNormalScore(
       total,
       total - miss,
       0,
       0,
-      0
+      0,
     )
 
     if (bestPossibleScoreAtThisMiss < score) break
@@ -94,21 +99,23 @@ export function inferJudgementCounts(
 
           if (marvelous < 0) continue
           if (marvelous < perfect) continue
-          if (type === 'PFC' && (great !== 0 || good !== 0)) continue
-          if (type === 'GFC' && good !== 0) continue
-          if (type === 'FC' && perfect === 0 && great === 0 && good === 0) {
-            continue
-          }
 
           const computed = calcNormalScore(
             total,
             marvelous + ok,
             perfect,
             great,
-            good
+            good,
           )
 
           if (computed !== score) continue
+
+          const exScore = calcExScore(marvelous + ok, perfect, great)
+
+          // A non-perfect normal score can never produce the theoretical max EX score.
+          if (score < 1000000 && exScore === theoreticalMaxExScore) {
+            continue
+          }
 
           candidates.push({
             marvelous,
@@ -117,7 +124,7 @@ export function inferJudgementCounts(
             good,
             ok,
             miss,
-            exScore: inferExScore(total, { perfect, great, good }),
+            exScore,
           })
         }
       }
@@ -126,7 +133,7 @@ export function inferJudgementCounts(
 
   if (candidates.length === 0) {
     throw new Error(
-      `Could not infer judgement breakdown for normalNotes=${notes}, okCount=${ok}, normalScore=${score}, fullComboType=${type ?? 'unknown'}`
+      `Could not infer judgement breakdown for normalNotes=${notes}, okCount=${ok}, normalScore=${score}`,
     )
   }
 
@@ -154,7 +161,7 @@ export function formatRange(min, max) {
 export function aggregateCandidatesByExScore(candidates) {
   const grouped = new Map()
 
-  candidates.forEach((candidate) => {
+  candidates.forEach(candidate => {
     const key = candidate.exScore
     if (!grouped.has(key)) {
       grouped.set(key, {
