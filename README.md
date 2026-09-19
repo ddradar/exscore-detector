@@ -39,13 +39,15 @@
 
 ## 開発
 
+- Node.js 24 (+ npm 11)が必要です。
+
 ```bash
+# 依存関係のインストール
 npm install
+# 開発サーバー起動
 npm run dev
-```
-
-## ビルド
-
-```bash
+# ビルド
 npm run build
+# テスト
+npm test
 ```
