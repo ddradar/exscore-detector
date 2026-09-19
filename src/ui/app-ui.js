@@ -1,9 +1,9 @@
 import {
   aggregateCandidatesByExScore,
-  formatRange,
+  calcExScore,
   inferJudgementCounts,
 } from '../core/score.js'
-import { getTheoreticalMaxEx, normalizeSongs } from '../core/song-data.js'
+import { normalizeSongs } from '../core/song-data.js'
 
 const songSelect = document.querySelector('#song-select')
 const scoreInput = document.querySelector('#normal-score-input')
@@ -15,6 +15,10 @@ const chartMeta = document.querySelector('#chart-meta')
 const appVersion = document.querySelector('#app-version')
 
 let songEntries = []
+
+function formatRange(min, max) {
+  return min === max ? String(min) : `${min}-${max}`
+}
 
 function setStatus(message, kind = 'default') {
   status.textContent = message
@@ -40,7 +44,7 @@ function renderSelectedSongMeta() {
     return
   }
 
-  const maxEx = getTheoreticalMaxEx(song)
+  const maxEx = calcExScore(song.notes + song.freezes + song.shocks, 0, 0)
   songMeta.textContent = `Notes: ${song.notes}/${song.freezes}/${song.shocks}, MAX: ${maxEx}`
 }
 

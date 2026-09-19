@@ -183,10 +183,6 @@ export function inferJudgementCounts(normalNotes, okCount, normalScore) {
   return candidates
 }
 
-export function formatRange(min, max) {
-  return min === max ? String(min) : `${min}-${max}`
-}
-
 /**
  * @param {InferCandidate[]} candidates Candidate list to aggregate by EX score
  * @returns {ExScoreAggregate[]} Aggregated candidates grouped by EX score
