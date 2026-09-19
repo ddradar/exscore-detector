@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`app UI > renders result table snapshot after submit 1`] = `"<table class="result-table"><thead><tr><th>#</th><th>MARVELOUS</th><th>PERFECT</th><th>GREAT</th><th>GOOD</th><th>OK</th><th>MISS</th><th>EX</th></tr></thead><tbody><tr class="best-pattern"><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td></tr></tbody></table>"`;
