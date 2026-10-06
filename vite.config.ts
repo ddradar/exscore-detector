@@ -99,7 +99,6 @@ export default defineConfig({
     singleQuote: true,
     trailingComma: 'es5',
     printWidth: 80,
-    ignorePatterns: ['*.md'],
     sortImports: {
       groups: [
         ['type-import', 'value-builtin', 'value-external'],
