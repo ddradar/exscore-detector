@@ -1,4 +1,4 @@
-function toNonNegativeInteger(value, keyName) {
+function toNonNegativeInteger(value: unknown, keyName: string) {
   const number = Number(value)
   if (!Number.isInteger(number) || number < 0) {
     throw new TypeError(`${keyName} must be a non-negative integer: ${value}`)
@@ -6,7 +6,7 @@ function toNonNegativeInteger(value, keyName) {
   return number
 }
 
-export function normalizeSongs(rawList) {
+export function normalizeSongs(rawList: unknown) {
   if (!Array.isArray(rawList) || rawList.length === 0) {
     throw new Error('songs.json に有効な楽曲データがありません。')
   }
@@ -19,21 +19,21 @@ export function normalizeSongs(rawList) {
     const title = String(entry.title ?? '').trim()
     if (!title) {
       throw new TypeError(
-        `songs.json[${index}].title must be a non-empty string`,
+        `songs.json[${index}].title must be a non-empty string`
       )
     }
 
     const notes = toNonNegativeInteger(
       entry.notes,
-      `songs.json[${index}].notes`,
+      `songs.json[${index}].notes`
     )
     const freezes = toNonNegativeInteger(
       entry.freezes,
-      `songs.json[${index}].freezes`,
+      `songs.json[${index}].freezes`
     )
     const shocks = toNonNegativeInteger(
       entry.shocks,
-      `songs.json[${index}].shocks`,
+      `songs.json[${index}].shocks`
     )
 
     return {

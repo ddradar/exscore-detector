@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vite-plus/test'
 
 import {
   aggregateCandidatesByExScore,
@@ -18,9 +18,9 @@ describe('/src/core/score.js', () => {
     'calcNormalScore(%i, %i, %i, %i, %i) returns %i',
     (totalNotes, marvelousAndOk, perfect, great, good, expected) => {
       expect(
-        calcNormalScore(totalNotes, marvelousAndOk, perfect, great, good),
+        calcNormalScore(totalNotes, marvelousAndOk, perfect, great, good)
       ).toBe(expected)
-    },
+    }
   )
 
   it.each([
@@ -33,7 +33,7 @@ describe('/src/core/score.js', () => {
     'calcExScore(%i, %i, %i) returns %i',
     (marvelousAndOk, perfect, great, expected) => {
       expect(calcExScore(marvelousAndOk, perfect, great)).toBe(expected)
-    },
+    }
   )
 
   it.each([
@@ -101,11 +101,11 @@ describe('/src/core/score.js', () => {
       expect(result).toEqual(expected)
       for (const r of result) {
         expect(r.marvelous + r.perfect + r.great + r.good).toBeLessThanOrEqual(
-          normalNotes,
+          normalNotes
         )
         expect(r.ok).toBeLessThanOrEqual(okCount)
         expect(r.marvelous + r.perfect + r.great + r.good + r.ok + r.miss).toBe(
-          normalNotes + okCount,
+          normalNotes + okCount
         )
         expect(
           calcNormalScore(
@@ -113,14 +113,14 @@ describe('/src/core/score.js', () => {
             r.marvelous + r.ok,
             r.perfect,
             r.great,
-            r.good,
-          ),
+            r.good
+          )
         ).toBe(normalScore)
         expect(r.exScore).toBe(
-          calcExScore(r.marvelous + r.ok, r.perfect, r.great),
+          calcExScore(r.marvelous + r.ok, r.perfect, r.great)
         )
       }
-    },
+    }
   )
 
   it('aggregates candidates by EX score ranges', () => {

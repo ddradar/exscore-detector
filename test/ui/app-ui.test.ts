@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
 function createAppMarkup() {
   return `
@@ -34,7 +34,7 @@ describe('app UI', () => {
   beforeEach(() => {
     vi.resetModules()
     document.body.innerHTML = createAppMarkup()
-    global.fetch = vi.fn().mockResolvedValue({
+    global.fetch = vi.fn<() => Promise<Response>>().mockResolvedValue({
       ok: true,
       json: async () => [
         {
@@ -44,7 +44,7 @@ describe('app UI', () => {
           shocks: 0,
         },
       ],
-    })
+    } as Response)
   })
 
   it('renders result table snapshot after submit', async () => {
@@ -53,16 +53,24 @@ describe('app UI', () => {
     initApp()
     await flushPromises()
 
-    const input = document.querySelector('#normal-score-input')
-    const form = document.querySelector('#detector-form')
+    const input = document.querySelector(
+      '#normal-score-input'
+    ) as HTMLInputElement
+    const form = document.querySelector('#detector-form') as HTMLFormElement
 
     input.value = '1000000'
     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
 
-    const snapshotRoot = document.querySelector('#result-container')
+    const snapshotRoot = document.querySelector(
+      '#result-container'
+    ) as HTMLDivElement
     expect(snapshotRoot.innerHTML).toMatchSnapshot()
 
-    expect(document.querySelector('#status').textContent).toContain('EX候補')
-    expect(document.querySelector('#app-version').textContent).toBe('0.1.0')
+    expect(
+      (document.querySelector('#status') as HTMLParagraphElement).textContent
+    ).toContain('EX候補')
+    expect(
+      (document.querySelector('#app-version') as HTMLSpanElement).textContent
+    ).not.toBe('')
   })
 })

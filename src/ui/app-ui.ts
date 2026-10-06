@@ -5,27 +5,35 @@ import {
 } from '../core/score.js'
 import { normalizeSongs } from '../core/song-data.js'
 
-const songSelect = document.querySelector('#song-select')
-const scoreInput = document.querySelector('#normal-score-input')
-const form = document.querySelector('#detector-form')
-const status = document.querySelector('#status')
-const songMeta = document.querySelector('#song-meta')
-const resultContainer = document.querySelector('#result-container')
-const chartMeta = document.querySelector('#chart-meta')
-const appVersion = document.querySelector('#app-version')
+const songSelect = document.querySelector('#song-select') as HTMLSelectElement
+const scoreInput = document.querySelector(
+  '#normal-score-input'
+) as HTMLInputElement
+const form = document.querySelector('#detector-form') as HTMLFormElement
+const status = document.querySelector('#status') as HTMLElement
+const songMeta = document.querySelector('#song-meta') as HTMLElement
+const resultContainer = document.querySelector(
+  '#result-container'
+) as HTMLElement
+const chartMeta = document.querySelector('#chart-meta') as HTMLElement
+const appVersion = document.querySelector('#app-version') as HTMLElement
 
-let songEntries = []
+type SongEntry = ReturnType<typeof normalizeSongs>[number]
+type ExAggregate = ReturnType<typeof aggregateCandidatesByExScore>[number]
+type JudgementRange = ExAggregate['marvelous']
 
-function formatRange(min, max) {
+let songEntries: SongEntry[] = []
+
+function formatRange(min: number, max: number) {
   return min === max ? String(min) : `${min}-${max}`
 }
 
-function setStatus(message, kind = 'default') {
+function setStatus(message: string | null, kind = 'default') {
   status.textContent = message
   status.className = `status ${kind}`
 }
 
-function createOption(value, text) {
+function createOption(value: string, text: string | null) {
   const option = document.createElement('option')
   option.value = value
   option.textContent = text
@@ -58,7 +66,7 @@ function populateSongOptions() {
   renderSelectedSongMeta()
 }
 
-function renderResultTable(candidates) {
+function renderResultTable(candidates: ExAggregate[]) {
   const table = document.createElement('table')
   table.className = 'result-table'
 
@@ -86,31 +94,44 @@ function renderResultTable(candidates) {
 
   const tbody = document.createElement('tbody')
 
-  candidates.forEach((item, index) => {
-    const row = document.createElement('tr')
-    if (item.exScore === maxExScore) {
-      row.classList.add('best-pattern')
+  candidates.forEach(
+    (
+      item: {
+        exScore: number
+        marvelous: JudgementRange
+        perfect: JudgementRange
+        great: JudgementRange
+        good: JudgementRange
+        ok: JudgementRange
+        miss: JudgementRange
+      },
+      index: number
+    ) => {
+      const row = document.createElement('tr')
+      if (item.exScore === maxExScore) {
+        row.classList.add('best-pattern')
+      }
+
+      const cells = [
+        index + 1,
+        formatRange(item.marvelous.min, item.marvelous.max),
+        formatRange(item.perfect.min, item.perfect.max),
+        formatRange(item.great.min, item.great.max),
+        formatRange(item.good.min, item.good.max),
+        formatRange(item.ok.min, item.ok.max),
+        formatRange(item.miss.min, item.miss.max),
+        item.exScore,
+      ]
+
+      cells.forEach(cell => {
+        const td = document.createElement('td')
+        td.textContent = String(cell)
+        row.appendChild(td)
+      })
+
+      tbody.appendChild(row)
     }
-
-    const cells = [
-      index + 1,
-      formatRange(item.marvelous.min, item.marvelous.max),
-      formatRange(item.perfect.min, item.perfect.max),
-      formatRange(item.great.min, item.great.max),
-      formatRange(item.good.min, item.good.max),
-      formatRange(item.ok.min, item.ok.max),
-      formatRange(item.miss.min, item.miss.max),
-      item.exScore,
-    ]
-
-    cells.forEach(cell => {
-      const td = document.createElement('td')
-      td.textContent = String(cell)
-      row.appendChild(td)
-    })
-
-    tbody.appendChild(row)
-  })
+  )
 
   table.appendChild(thead)
   table.appendChild(tbody)
@@ -140,7 +161,7 @@ function bindEvents() {
     ) {
       setStatus(
         '通常スコアは 0 から 1000000 の整数で入力してください。',
-        'error',
+        'error'
       )
       return
     }
@@ -154,7 +175,7 @@ function bindEvents() {
       chartMeta.textContent = `${song.title} / Normal Score: ${normalScore}`
       setStatus(
         `${exAggregates.length} 件のEX候補を表示（${candidates.length} パターンを集約）`,
-        'success',
+        'success'
       )
       resultContainer.appendChild(renderResultTable(exAggregates))
     } catch (error) {
@@ -174,7 +195,7 @@ async function loadSongs() {
     const response = await fetch('/songs.json', { cache: 'no-store' })
     if (!response.ok) {
       throw new Error(
-        `songs.json の読み込みに失敗しました (${response.status})`,
+        `songs.json の読み込みに失敗しました (${response.status})`
       )
     }
 
@@ -188,7 +209,14 @@ async function loadSongs() {
 }
 
 export function initApp() {
-  appVersion.textContent = import.meta.env.PACKAGE_VERSION
+  const packageVersion =
+    (
+      import.meta as ImportMeta & {
+        env?: { PACKAGE_VERSION?: string }
+      }
+    ).env?.PACKAGE_VERSION ?? 'unknown'
+
+  appVersion.textContent = packageVersion
   bindEvents()
   loadSongs()
 }
