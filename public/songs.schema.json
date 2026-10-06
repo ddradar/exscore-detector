@@ -18,13 +18,7 @@
           "difficulty": {
             "type": "string",
             "title": "譜面の難易度",
-            "enum": [
-              "BEGINNER",
-              "BASIC",
-              "DIFFICULT",
-              "EXPERT",
-              "CHALLENGE"
-            ]
+            "enum": ["BEGINNER", "BASIC", "DIFFICULT", "EXPERT", "CHALLENGE"]
           },
           "level": {
             "type": "integer",
@@ -48,18 +42,11 @@
             "minimum": 0
           }
         },
-        "required": [
-          "name",
-          "difficulty",
-          "level",
-          "notes"
-        ],
+        "required": ["name", "difficulty", "level", "notes"],
         "additionalProperties": true
       }
     }
   },
-  "required": [
-    "name"
-  ],
+  "required": ["name"],
   "additionalProperties": true
 }
