@@ -1,19 +1,19 @@
 /**
  * Calculates the normal score based on the given judgement counts.
- * @param {number} totalNotes Total notes + freeze arrows + shock arrows
- * @param {number} marvelousAndOk Marvelous + OK count
- * @param {number} perfect Perfect count
- * @param {number} great Great count
- * @param {number} good Good count
- * @returns {number} The calculated normal score
+ * @param totalNotes Total notes + freeze arrows + shock arrows
+ * @param marvelousAndOk Marvelous + OK count
+ * @param perfect Perfect count
+ * @param great Great count
+ * @param good Good count
+ * @returns The calculated normal score
  */
 export function calcNormalScore(
-  totalNotes,
-  marvelousAndOk,
-  perfect,
-  great,
-  good,
-) {
+  totalNotes: number,
+  marvelousAndOk: number,
+  perfect: number,
+  great: number,
+  good: number
+): number {
   // [Base score]: 1000000 / (notes + freezes + shocks)
   // - Marvelous & OK = [Base score]
   // - Perfect = [Base score] - 10
@@ -27,19 +27,23 @@ export function calcNormalScore(
         totalNotes -
         perfect -
         great -
-        good,
+        good
     ) * 10
   )
 }
 
 /**
  * Calculates the EX score based on the given judgement counts.
- * @param {number} marvelousAndOk Marvelous + OK count
- * @param {number} perfect Perfect count
- * @param {number} great Great count
- * @returns {number} The calculated EX score
+ * @param marvelousAndOk Marvelous + OK count
+ * @param perfect Perfect count
+ * @param great Great count
+ * @returns The calculated EX score
  */
-export function calcExScore(marvelousAndOk, perfect, great) {
+export function calcExScore(
+  marvelousAndOk: number,
+  perfect: number,
+  great: number
+): number {
   // - Marvelous & OK = 3
   // - Perfect = 2
   // - Great = 1
@@ -48,50 +52,51 @@ export function calcExScore(marvelousAndOk, perfect, great) {
   return marvelousAndOk * 3 + perfect * 2 + great
 }
 
-/**
- * @typedef {Object} InferCandidate
- * @property {number} marvelous Marvelous count (without OK)
- * @property {number} perfect Perfect count
- * @property {number} great Great count
- * @property {number} good Good count
- * @property {number} ok OK count
- * @property {number} miss Miss count
- * @property {number} exScore Inferred EX score
- */
+interface InferCandidate {
+  marvelous: number
+  perfect: number
+  great: number
+  good: number
+  ok: number
+  miss: number
+  exScore: number
+}
 
-/**
- * @typedef {Object} JudgementRange
- * @property {number} min Minimum value in grouped candidates
- * @property {number} max Maximum value in grouped candidates
- */
+interface JudgementRange {
+  min: number
+  max: number
+}
 
-/**
- * @typedef {Object} ExScoreAggregate
- * @property {number} exScore EX score key for this aggregate row
- * @property {JudgementRange} marvelous Marvelous count range
- * @property {JudgementRange} perfect Perfect count range
- * @property {JudgementRange} great Great count range
- * @property {JudgementRange} good Good count range
- * @property {JudgementRange} ok OK count range
- * @property {JudgementRange} miss Miss count range
- * @property {number} patterns Number of grouped candidate patterns
- */
+interface ExScoreAggregate {
+  exScore: number
+  marvelous: JudgementRange
+  perfect: JudgementRange
+  great: JudgementRange
+  good: JudgementRange
+  ok: JudgementRange
+  miss: JudgementRange
+  patterns: number
+}
 
 /**
  *
- * @param {number} normalNotes Notes count (exclude Freeze arrows & Shock arrows)
- * @param {number} okCount OK count (Freeze arrows & Shock arrows)
- * @param {number} normalScore Normal score (0-1000000)
- * @returns {InferCandidate[]} Array of inferred judgement counts with exScore
+ * @param normalNotes Notes count (exclude Freeze arrows & Shock arrows)
+ * @param okCount OK count (Freeze arrows & Shock arrows)
+ * @param normalScore Normal score (0-1000000)
+ * @returns Array of inferred judgement counts with exScore
  */
-export function inferJudgementCounts(normalNotes, okCount, normalScore) {
+export function inferJudgementCounts(
+  normalNotes: number,
+  okCount: number,
+  normalScore: number
+): InferCandidate[] {
   const notes = Number(normalNotes)
   const ok = Number(okCount)
   const score = Number(normalScore)
 
   if (!Number.isInteger(notes) || notes < 0) {
     throw new TypeError(
-      `normalNotes must be a non-negative integer: ${normalNotes}`,
+      `normalNotes must be a non-negative integer: ${normalNotes}`
     )
   }
 
@@ -101,7 +106,7 @@ export function inferJudgementCounts(normalNotes, okCount, normalScore) {
 
   if (!Number.isInteger(score) || score < 0 || score > 1000000) {
     throw new TypeError(
-      `normalScore must be an integer between 0 and 1000000: ${normalScore}`,
+      `normalScore must be an integer between 0 and 1000000: ${normalScore}`
     )
   }
 
@@ -116,7 +121,7 @@ export function inferJudgementCounts(normalNotes, okCount, normalScore) {
       total - miss,
       0,
       0,
-      0,
+      0
     )
 
     if (bestPossibleScoreAtThisMiss < score) break
@@ -134,7 +139,7 @@ export function inferJudgementCounts(normalNotes, okCount, normalScore) {
             marvelous + ok,
             perfect,
             great,
-            good,
+            good
           )
 
           if (computed !== score) continue
@@ -162,7 +167,7 @@ export function inferJudgementCounts(normalNotes, okCount, normalScore) {
 
   if (candidates.length === 0) {
     throw new Error(
-      `Could not infer judgement breakdown for normalNotes=${notes}, okCount=${ok}, normalScore=${score}`,
+      `Could not infer judgement breakdown for normalNotes=${notes}, okCount=${ok}, normalScore=${score}`
     )
   }
 
@@ -184,10 +189,12 @@ export function inferJudgementCounts(normalNotes, okCount, normalScore) {
 }
 
 /**
- * @param {InferCandidate[]} candidates Candidate list to aggregate by EX score
- * @returns {ExScoreAggregate[]} Aggregated candidates grouped by EX score
+ * @param candidates Candidate list to aggregate by EX score
+ * @returns Aggregated candidates grouped by EX score
  */
-export function aggregateCandidatesByExScore(candidates) {
+export function aggregateCandidatesByExScore(
+  candidates: InferCandidate[]
+): ExScoreAggregate[] {
   const grouped = new Map()
 
   candidates.forEach(candidate => {
