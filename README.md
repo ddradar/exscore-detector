@@ -27,7 +27,7 @@
 - サンプルは[こちら](./test/songs.json)にあります。
 - (詳しい方向け): JSON のスキーマは `public/songs.schema.json` にあります。
 
-```jsonc
+```json
 {
   "name": "鉄心道 Act.3", // 譜面のまとまりを表す名前（イベント名など）
   "charts": [
