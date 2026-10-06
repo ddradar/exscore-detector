@@ -13,9 +13,91 @@
         <p class="lead">通常スコアから判定内訳とEXスコアを推定します。</p>
 
         <form id="detector-form" class="detector-form">
-          <label for="song-select">曲名</label>
-          <select id="song-select" required></select>
-          <p id="song-meta" class="song-meta"></p>
+          <fieldset class="source-fieldset">
+            <legend>譜面入力</legend>
+            <div id="upload-ui">
+              <div id="json-drop-zone" class="drop-zone" tabindex="0">
+                JSONファイルをここにドラッグ＆ドロップ
+              </div>
+              <div class="import-actions">
+                <input
+                  id="json-file-input"
+                  type="file"
+                  accept=".json,application/json"
+                />
+              </div>
+              <p class="schema-link-note">
+                形式は
+                <a
+                  href="https://github.com/ddradar/exscore-detector?tab=readme-ov-file#JSONインポート機能について"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  README
+                </a>
+                を参照してください。
+              </p>
+            </div>
+            <p id="imported-json-name" class="imported-json-name" hidden></p>
+            <button
+              id="json-clear-button"
+              type="button"
+              class="secondary-button"
+              hidden
+            >
+              取り込みJSONをクリア
+            </button>
+
+            <label for="song-select">曲名</label>
+            <select id="song-select"></select>
+            <p id="song-meta" class="song-meta"></p>
+
+            <div id="manual-inputs" class="manual-inline">
+              <div class="compact-field">
+                <label for="manual-notes-input">ノート数</label>
+                <input
+                  id="manual-notes-input"
+                  type="number"
+                  min="1"
+                  max="9999"
+                  step="1"
+                  placeholder="500"
+                />
+              </div>
+
+              <div class="compact-field">
+                <label for="manual-freezes-input">FA</label>
+                <input
+                  id="manual-freezes-input"
+                  type="number"
+                  min="0"
+                  max="9999"
+                  step="1"
+                  placeholder="25"
+                />
+              </div>
+
+              <div class="compact-field">
+                <label for="manual-shocks-input">SA</label>
+                <input
+                  id="manual-shocks-input"
+                  type="number"
+                  min="0"
+                  max="9999"
+                  step="1"
+                  placeholder="0"
+                />
+              </div>
+
+              <button
+                id="manual-clear-button"
+                type="button"
+                class="secondary-button"
+              >
+                入力クリア
+              </button>
+            </div>
+          </fieldset>
 
           <label for="normal-score-input">通常スコア</label>
           <input
@@ -28,7 +110,7 @@
             required
           />
 
-          <button type="submit">計算する</button>
+          <button type="submit" class="primary-button">計算する</button>
         </form>
 
         <p class="note">フルコンボ種別は常に未指定として推定します。</p>

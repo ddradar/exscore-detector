@@ -1,0 +1,262 @@
+{
+  "$schema": "../public/songs.schema.json",
+  "name": "鉄心道 Act.3",
+  "charts": [
+    {
+      "name": "ビビットストリーム",
+      "difficulty": "EXPERT",
+      "level": 13,
+      "notes": 464,
+      "freezes": 18,
+      "shocks": 0
+    },
+    {
+      "name": "紅焔",
+      "difficulty": "EXPERT",
+      "level": 12,
+      "notes": 420,
+      "freezes": 19,
+      "shocks": 0
+    },
+    {
+      "name": "隅田川夏恋歌",
+      "difficulty": "EXPERT",
+      "level": 12,
+      "notes": 484,
+      "freezes": 0,
+      "shocks": 0
+    },
+    {
+      "name": "花は折りたし梢は高し",
+      "difficulty": "EXPERT",
+      "level": 12,
+      "notes": 358,
+      "freezes": 13,
+      "shocks": 0
+    },
+    {
+      "name": "Find The Way",
+      "difficulty": "EXPERT",
+      "level": 12,
+      "notes": 398,
+      "freezes": 13,
+      "shocks": 0
+    },
+    {
+      "name": "HyperNOAH",
+      "difficulty": "EXPERT",
+      "level": 12,
+      "notes": 434,
+      "freezes": 14,
+      "shocks": 0
+    },
+    {
+      "name": "MAKE IT BETTER(So-REAL Mix)",
+      "difficulty": "CHALLENGE",
+      "level": 12,
+      "notes": 237,
+      "freezes": 10,
+      "shocks": 29
+    },
+    {
+      "name": "Trigger (DIF)",
+      "difficulty": "DIFFICULT",
+      "level": 12,
+      "notes": 377,
+      "freezes": 11,
+      "shocks": 0
+    },
+    {
+      "name": "向日葵サンセット",
+      "difficulty": "EXPERT",
+      "level": 13,
+      "notes": 339,
+      "freezes": 18,
+      "shocks": 0
+    },
+    {
+      "name": "Aria",
+      "difficulty": "DIFFICULT",
+      "level": 13,
+      "notes": 431,
+      "freezes": 24,
+      "shocks": 0
+    },
+    {
+      "name": "BURNING HEAT！（3 Option MIX）",
+      "difficulty": "EXPERT",
+      "level": 13,
+      "notes": 413,
+      "freezes": 5,
+      "shocks": 0
+    },
+    {
+      "name": "HAPPY☆LUCKY☆YEAPPY",
+      "difficulty": "DIFFICULT",
+      "level": 13,
+      "notes": 376,
+      "freezes": 8,
+      "shocks": 0
+    },
+    {
+      "name": "MAX 300 (Super-Max-Me Mix)",
+      "difficulty": "DIFFICULT",
+      "level": 13,
+      "notes": 409,
+      "freezes": 34,
+      "shocks": 0
+    },
+    {
+      "name": "volcano",
+      "difficulty": "EXPERT",
+      "level": 13,
+      "notes": 436,
+      "freezes": 18,
+      "shocks": 0
+    },
+    {
+      "name": "WONDER COASTER",
+      "difficulty": "EXPERT",
+      "level": 13,
+      "notes": 499,
+      "freezes": 14,
+      "shocks": 0
+    },
+    {
+      "name": "華麗なる！音戯探偵ひなビタ♫",
+      "difficulty": "EXPERT",
+      "level": 14,
+      "notes": 395,
+      "freezes": 29,
+      "shocks": 0
+    },
+    {
+      "name": "Confession",
+      "difficulty": "CHALLENGE",
+      "level": 14,
+      "notes": 473,
+      "freezes": 21,
+      "shocks": 0
+    },
+    {
+      "name": "Electronic Sports Complex",
+      "difficulty": "DIFFICULT",
+      "level": 14,
+      "notes": 462,
+      "freezes": 17,
+      "shocks": 0
+    },
+    {
+      "name": "FUNKY SUMMER BEACH",
+      "difficulty": "EXPERT",
+      "level": 14,
+      "notes": 457,
+      "freezes": 7,
+      "shocks": 0
+    },
+    {
+      "name": "Jucunda Memoria",
+      "difficulty": "DIFFICULT",
+      "level": 14,
+      "notes": 505,
+      "freezes": 17,
+      "shocks": 0
+    },
+    {
+      "name": "London EVOLVED ver.A",
+      "difficulty": "EXPERT",
+      "level": 14,
+      "notes": 433,
+      "freezes": 4,
+      "shocks": 0
+    },
+    {
+      "name": "Top The Charts",
+      "difficulty": "CHALLENGE",
+      "level": 14,
+      "notes": 404,
+      "freezes": 19,
+      "shocks": 22
+    },
+    {
+      "name": "天空の華",
+      "difficulty": "EXPERT",
+      "level": 15,
+      "notes": 595,
+      "freezes": 5,
+      "shocks": 0
+    },
+    {
+      "name": "Can't Stop Running!!",
+      "difficulty": "EXPERT",
+      "level": 15,
+      "notes": 541,
+      "freezes": 25,
+      "shocks": 0
+    },
+    {
+      "name": "C-C-C-N-N-N",
+      "difficulty": "EXPERT",
+      "level": 15,
+      "notes": 465,
+      "freezes": 23,
+      "shocks": 0
+    },
+    {
+      "name": "Horatio",
+      "difficulty": "CHALLENGE",
+      "level": 15,
+      "notes": 436,
+      "freezes": 12,
+      "shocks": 37
+    },
+    {
+      "name": "MAX 300",
+      "difficulty": "EXPERT",
+      "level": 15,
+      "notes": 555,
+      "freezes": 2,
+      "shocks": 0
+    },
+    {
+      "name": "Samurai Shogun vs. Master Ninja",
+      "difficulty": "EXPERT",
+      "level": 15,
+      "notes": 572,
+      "freezes": 22,
+      "shocks": 0
+    },
+    {
+      "name": "VOLAQUAS",
+      "difficulty": "DIFFICULT",
+      "level": 15,
+      "notes": 623,
+      "freezes": 56,
+      "shocks": 0
+    },
+    {
+      "name": "最小三倍完全数",
+      "difficulty": "DIFFICULT",
+      "level": 14,
+      "notes": 496,
+      "freezes": 6,
+      "shocks": 0
+    },
+    {
+      "name": "Steps for Victory",
+      "difficulty": "DIFFICULT",
+      "level": 15,
+      "notes": 573,
+      "freezes": 34,
+      "shocks": 0
+    },
+    {
+      "name": "Sparkle Smilin'",
+      "difficulty": "EXPERT",
+      "level": 14,
+      "notes": 580,
+      "freezes": 16,
+      "shocks": 0
+    }
+  ]
+}
