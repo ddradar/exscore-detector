@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "曲のまとまりを表す名称（例:イベント名など）"
+    },
+    "charts": {
+      "type": "array",
+      "title": "譜面のリスト",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "difficulty": {
+            "type": "string",
+            "title": "譜面の難易度",
+            "enum": [
+              "BEGINNER",
+              "BASIC",
+              "DIFFICULT",
+              "EXPERT",
+              "CHALLENGE"
+            ]
+          },
+          "level": {
+            "type": "integer",
+            "title": "譜面のレベル",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "notes": {
+            "type": "integer",
+            "title": "譜面の通常ノーツ数",
+            "exclusiveMinimum": 0
+          },
+          "freezes": {
+            "type": "integer",
+            "title": "譜面のフリーズアロー数（省略時は0）",
+            "minimum": 0
+          },
+          "shocks": {
+            "type": "integer",
+            "title": "譜面のショックアロー数（省略時は0）",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "name",
+          "difficulty",
+          "level",
+          "notes"
+        ],
+        "additionalProperties": true
+      }
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "additionalProperties": true
+}
